@@ -20,7 +20,7 @@ and data broken as trainee Last Name and First Name, then the Thesis Mentor last
 |----------|-----------|---------------------|
 | Potter   | Harry     | Dumbledore, Albus   |
 | Granger  | Hermione  | McGonagall, Minerva |
-| Malfoy   | Draco     | Riddle, Tom Marvolo |
+| Malfoy   | Draco     | Snape, Severus      |
 ```
 
 Then, run the following command (with your own filepath, of course):

@@ -319,15 +319,11 @@ class PaperAbstract(Paper):
                             in standard_author]
 
         if len(matching_authors) != 1:
-            # import pdb
-            # pdb.set_trace()
             print(f"Found `{len(matching_authors)}` matching author names ")
             return False
 
         is_listed_first = author_list[0] == matching_authors[0]
         is_co_first = 'EqualContrib' in matching_authors[0].keys()
-        if is_co_first:
-            print("We got a co-first author up in here!")
         return (is_listed_first or is_co_first)
 
 
@@ -339,7 +335,17 @@ def main(filepath):
     a few files in the same directory.
     """
 
+    # Check to ensure the config.py file was set up correctly
+    if NCBI_EMAIL == 'abc@123.com' \
+       or not re.match(r"[^@]+@[^@]+\.[^@]+", NCBI_EMAIL):
+        raise ValueError('Please supply a valid email in the config.py file')
+
+    if NCBI_API_KEY == 'abc123':
+        raise ValueError('You must add your NCBI API key to config.py')
+
     infile = pd.read_csv(filepath)
+    # Limit the number of rows for testing.
+    # TODO: Make this a command line argument
     # infile = infile[:5]
 
     trainee_stats = []
@@ -351,7 +357,7 @@ def main(filepath):
         trainee_stats.append(a.assess_trainee())
         paper_content.extend(a.paper_content)
 
-    timestamp = dt.datetime.now()
+    timestamp = dt.datetime.strftime(dt.datetime.now(), '%Y-%m-%d_%H:%M')
 
     # Export the trainee stats
     stats = pd.DataFrame(trainee_stats)
@@ -365,9 +371,6 @@ def main(filepath):
     pc['pubmed'] = pc['articleids'].apply(
         lambda x: extract_identifier(x, 'pubmed'))
     pc.to_csv(f'{timestamp}_paper_content.csv', index=False, encoding='utf-8')
-
-    # Export the first_author_paper list
-    # fadf.to_csv('{} first_author_journal_list.csv'.format(now))
 
 
 if __name__ == "__main__":
